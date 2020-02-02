@@ -8,7 +8,7 @@ CHUNK = 1024
 RECORD_SECONDS = 5
 WAVE_OUTPUT_FILENAME = "file.wav"
 
-def record(WAVE_OUTPUT_FILENAME = WAVE_OUTPUT_FILENAME, RECORD_SECONDS=RECORD_SECONDS):
+def main(WAVE_OUTPUT_FILENAME = WAVE_OUTPUT_FILENAME, RECORD_SECONDS=RECORD_SECONDS):
     audio = pyaudio.PyAudio()
 
     # start Recording
@@ -27,14 +27,25 @@ def record(WAVE_OUTPUT_FILENAME = WAVE_OUTPUT_FILENAME, RECORD_SECONDS=RECORD_SE
     # stop Recording
     stream.stop_stream()
     stream.close()
+
+    # Open playback stream.
+    stream = audio.open(format=FORMAT,
+        channels=CHANNELS,
+        rate=RATE,output=True)
+
+    for frame in frames:
+        stream.write(frame)
+    # data = wf.readframes(chunk_size)
+    # while len(data) > 0:
+    #     stream.write(data)
+    #     data = wf.readframes(chunk_size)
+
+    # Stop stream.
+    stream.stop_stream()
+    stream.close()
+
+    # Close PyAudio.
     audio.terminate()
 
-    return frames
-
-def writeToWav(frames)
-    waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-    waveFile.setnchannels(CHANNELS)
-    waveFile.setsampwidth(audio.get_sample_size(FORMAT))
-    waveFile.setframerate(RATE)
-    waveFile.writeframes(b''.join(frames))
-    waveFile.close()
+if __name__ == '__main__':
+    main()
